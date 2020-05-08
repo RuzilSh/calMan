@@ -1,0 +1,19 @@
+<html>
+<body>
+<form method="post">
+ <input type="text" name="description" placeholder=" add description" />
+ <input type="text" name="calories" placeholder="add calories">
+    <button type="submit">Submit</button>
+
+</form>
+
+    <div>Meals</div>
+    {{#meals}}
+    <div>
+        <b>{{id}}</b>
+        <span>{{description}}</span>
+        <i>{{calories}}</i>
+    </div>
+    {{/meals}}
+</body>
+</html>
