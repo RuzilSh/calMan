@@ -1,10 +1,13 @@
 package com.mycalories.caloriesmanagement.domain;
 
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Meal {
@@ -18,7 +21,11 @@ public class Meal {
     }
 
     public Meal(String description, Integer calories) {
-        this(null, description,calories);
+        this(null, description, calories);
+    }
+
+    public Meal(Integer id) {
+        this.id = id;
     }
 
     public Meal(Integer id, String description, Integer calories) {
