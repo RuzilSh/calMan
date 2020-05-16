@@ -8,6 +8,8 @@
 <h3>Edit meal</h3>
 <form th:action="@{/meals/save}"  method="post">
     <input type="hidden" name="id" th:value="${meal.id}"/>
+    <input type="" name="id" th:value="${meal.id}"/>
+    <p>Date: <input type="datetime-local" name="localDateTime" th:value="${meal.localDateTime}"/></p>
     <p>Description: <input type="text" name="description" th:value="${meal.description}"/></p>
     <p>Calories: <input type="number" name="calories" th:value ="${meal.calories}"/></p>
     <p><input type= "button" onclick="window.history.back()" value="Cancel" /> <input type="submit" value="Save"/></p>

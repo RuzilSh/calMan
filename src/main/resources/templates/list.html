@@ -6,10 +6,15 @@
 </head>
 <body>
 <h3><a th:href="@{/meals/edit}">Add Meal</a></h3>
+<form th:action="@{/meals/filter}"  method="get">
+    <p> <input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type= "submit" value="Filter" /></p>
+</form>
 <table border="1" cellpadding="10" cellspacing="0">
     <thead>
     <tr>
         <th> id</th>
+        <th> Excess</th>
+        <th> Date/Time</th>
         <th> Description</th>
         <th> Calories</th>
     </tr>
@@ -20,11 +25,12 @@
     </tr>
     <tr th:each="meal : ${meals}">
         <td><span th:text="${meal.id}"></span></td>
+        <td><span th:text="${meal.excess}"></span></td>
+        <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
         <td><span th:text="${meal.description}"></span></td>
         <td><span th:text="${meal.calories}"></span></td>
         <td><a th:href="@{/meals/delete/{id}(id=${meal.id})}">Delete</a></td>
         <td><a th:href="@{/meals/edit(id=${meal.id})}"> Update</a></td>
-
     </tr>
     </tbody>
 </table>

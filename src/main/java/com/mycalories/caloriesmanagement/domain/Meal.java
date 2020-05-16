@@ -3,33 +3,34 @@ package com.mycalories.caloriesmanagement.domain;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Meal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    private LocalDateTime localDateTime;
     private String description;
     private Integer calories;
 
     public Meal() {
     }
 
-    public Meal(String description, Integer calories) {
-        this(null, description, calories);
+    public Meal(LocalDateTime localDateTime) {
+        this(null, localDateTime, null, null);
     }
 
-    public Meal(Integer id) {
-        this.id = id;
+    public Meal(LocalDateTime localDateTime, String description, Integer calories) {
+        this(null, localDateTime, description, calories);
     }
 
-    public Meal(Integer id, String description, Integer calories) {
+    public Meal(Integer id, LocalDateTime localDateTime, String description, Integer calories) {
         this.id = id;
+        this.localDateTime = localDateTime;
         this.description = description;
         this.calories = calories;
     }
@@ -40,6 +41,14 @@ public class Meal {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public String getDescription() {
@@ -56,5 +65,9 @@ public class Meal {
 
     public void setCalories(Integer calories) {
         this.calories = calories;
+    }
+
+    public LocalDate getDate(){
+        return localDateTime.toLocalDate();
     }
 }
