@@ -33,21 +33,10 @@ public class MealController {
         return "list";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") Integer id) {
         repository.deleteById(id);
         return "redirect:/meals";
-    }
-
-    @GetMapping("/edit")
-    public String edit(@RequestParam(name = "id", required = false) Integer id, Model model) {
-        if (id == null) {
-            model.addAttribute("meal", new Meal(LocalDateTime.now()));
-            return "form";
-        }
-        Meal meal = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid meal Id:" + id));
-        model.addAttribute("meal", meal);
-        return "form";
     }
 
     @GetMapping("/filter")
@@ -62,7 +51,7 @@ public class MealController {
     }
 
     @PostMapping("/save")
-    public String createOrUpdate(@RequestParam(name = "id") Integer id,
+    public String createOrUpdate(@RequestParam(name = "id", required = false) Integer id,
                                  @RequestParam(name = "localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime,
                                  @RequestParam(name = "description") String description,
                                  @RequestParam(name = "calories") Integer calories) {
