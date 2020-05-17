@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>Meals</title>
 </head>
 <body>
-<h3><a th:href="@{/meals/edit}">Add Meal</a></h3>
-<form th:action="@{/meals/filter}"  method="get">
-    <p> <input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type= "submit" value="Filter" /></p>
-</form>
-<table border="1" cellpadding="10" cellspacing="0">
-    <thead>
-    <tr>
-        <th> id</th>
-        <th> Excess</th>
-        <th> Date/Time</th>
-        <th> Description</th>
-        <th> Calories</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${meals.empty}">
-        <td colspan="2"> No Meals Available</td>
-    </tr>
-    <tr th:each="meal : ${meals}">
-        <td><span th:text="${meal.id}"></span></td>
-        <td><span th:text="${meal.excess}"></span></td>
-        <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
-        <td><span th:text="${meal.description}"></span></td>
-        <td><span th:text="${meal.calories}"></span></td>
-        <td><a th:href="@{/meals/delete/{id}(id=${meal.id})}">Delete</a></td>
-        <td><a th:href="@{/meals/edit(id=${meal.id})}"> Update</a></td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <a th:href="@{/meals/edit}" role="button" class="btn btn-primary btn-lg">Add</a>
+    <div>
+    <form th:action="@{/meals/filter}"  method="get">
+        <p> <input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type= "submit" value="Filter" /></p>
+    </form>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th> id</th>
+            <th> Date/Time</th>
+            <th> Description</th>
+            <th> Calories</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${meals.empty}">
+            <td colspan="2"> No Meals Available</td>
+        </tr>
+        <tr th:each="meal : ${meals}" th:style="${meal.excess ? 'color: green;' : 'color: red;'}">
+            <td><span th:text="${meal.id}"></span></td>
+            <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
+            <td><span th:text="${meal.description}"></span></td>
+            <td><span th:text="${meal.calories}"></span></td>
+            <td><a th:href="@{/meals/edit(id=${meal.id})}" role="button" class="btn btn-warning btn-sm"> Update</a> <a th:href="@{/meals/delete/{id}(id=${meal.id})}" role="button" class="btn btn-danger btn-sm">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</div>
 </body>
 </html>

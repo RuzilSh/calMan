@@ -1,6 +1,6 @@
 package com.mycalories.caloriesmanagement.repository;
 
-import com.mycalories.caloriesmanagement.domain.Meal;
+import com.mycalories.caloriesmanagement.model.Meal;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

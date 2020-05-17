@@ -1,10 +1,11 @@
-package com.mycalories.caloriesmanagement.domain;
+package com.mycalories.caloriesmanagement.model;
 
 
-import org.springframework.beans.factory.annotation.Value;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,8 +14,11 @@ public class Meal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @NotNull
     private LocalDateTime localDateTime;
+    @Size(min = 2, max = 120)
     private String description;
+    @Range(min = 10, max = 5000)
     private Integer calories;
 
     public Meal() {

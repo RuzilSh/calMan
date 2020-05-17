@@ -1,6 +1,6 @@
 package com.mycalories.caloriesmanagement.util;
 
-import com.mycalories.caloriesmanagement.domain.Meal;
+import com.mycalories.caloriesmanagement.model.Meal;
 import com.mycalories.caloriesmanagement.to.MealTo;
 
 import java.time.LocalDate;

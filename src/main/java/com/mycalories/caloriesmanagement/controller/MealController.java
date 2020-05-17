@@ -1,6 +1,6 @@
 package com.mycalories.caloriesmanagement.controller;
 
-import com.mycalories.caloriesmanagement.domain.Meal;
+import com.mycalories.caloriesmanagement.model.Meal;
 import com.mycalories.caloriesmanagement.repository.MealRepository;
 import com.mycalories.caloriesmanagement.to.MealTo;
 import com.mycalories.caloriesmanagement.util.MealUtil;
@@ -51,12 +51,8 @@ public class MealController {
     }
 
     @GetMapping("/filter")
-    public String filter(@RequestParam(name = "startDate")
-                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                         @Nullable LocalDate startDate,
-                         @RequestParam(name = "endDate")
-                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                         @Nullable LocalDate endDate, Model model){
+    public String filter(@RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @Nullable LocalDate startDate,
+                         @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @Nullable LocalDate endDate, Model model) {
         LocalDateTime firstDate = startDate != null ? startDate.atStartOfDay() : LocalDateTime.of(1, 1, 1, 0, 0);
         LocalDateTime secondDate = endDate != null ? endDate.atStartOfDay().plusDays(1) : LocalDateTime.of(3000, 1, 1, 0, 0);
         final List<Meal> filteredByDate = repository.getFilteredByDate(firstDate, secondDate);
@@ -66,7 +62,10 @@ public class MealController {
     }
 
     @PostMapping("/save")
-    public String createOrUpdate(@RequestParam(name = "id") Integer id, @RequestParam(name = "localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime, @RequestParam(name = "description") String description, @RequestParam(name = "calories") Integer calories) {
+    public String createOrUpdate(@RequestParam(name = "id") Integer id,
+                                 @RequestParam(name = "localDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime localDateTime,
+                                 @RequestParam(name = "description") String description,
+                                 @RequestParam(name = "calories") Integer calories) {
         repository.save(new Meal(id, localDateTime, description, calories));
         return "redirect:/meals";
     }
