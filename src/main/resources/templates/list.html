@@ -1,45 +1,253 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="stylesheet" href="css/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>Meals</title>
+    <title>your meal</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="jquery.datetimepicker.min.css">
 </head>
 <body>
-<div class="container">
-    <a th:href="@{/meals/edit}" role="button" class="btn btn-primary btn-lg">Add</a>
-    <div>
-    <form th:action="@{/meals/filter}"  method="get">
-        <p> <input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type= "submit" value="Filter" /></p>
-    </form>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="mealaddmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create meal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form th:action="@{/meals/save}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Data/Time</label>
+                        <input type="datetime-local" name="localDateTime" class="form-control" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" name="description" class="form-control" placeholder="Description">
+                    </div>
+                    <div class="form-group">
+                        <label>Calories</label>
+                        <input type="number" name="calories" class="form-control" placeholder="Calories">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="savemeal" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th> id</th>
-            <th> Date/Time</th>
-            <th> Description</th>
-            <th> Calories</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${meals.empty}">
-            <td colspan="2"> No Meals Available</td>
-        </tr>
-        <tr th:each="meal : ${meals}" th:style="${meal.excess ? 'color: green;' : 'color: red;'}">
-            <td><span th:text="${meal.id}"></span></td>
-            <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
-            <td><span th:text="${meal.description}"></span></td>
-            <td><span th:text="${meal.calories}"></span></td>
-            <td><a th:href="@{/meals/edit(id=${meal.id})}" role="button" class="btn btn-warning btn-sm"> Update</a> <a th:href="@{/meals/delete/{id}(id=${meal.id})}" role="button" class="btn btn-danger btn-sm">Delete</a></td>
-        </tr>
-        </tbody>
-    </table>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </div>
+
+<!--##################################################################################################################-->
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit meal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form th:action="@{/meals/save}" method="post">
+                <div class="modal-body">
+
+                    <input type="hidden" name="id" id="update_id">
+
+                    <div class="form-group">
+                        <label>Data/Time</label>
+                        <input type="datetime-local" th:name="localDateTime" id="localDateTime" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" name="description" id="description" class="form-control"
+                               placeholder="Description">
+                    </div>
+                    <div class="form-group">
+                        <label>Calories</label>
+                        <input type="number" name="calories" id="calories" class="form-control" placeholder="Calories">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="savemeal" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--######################################################################################################################-->
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Deleting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form th:action="@{/meals/delete}" method="get">
+                <div class="modal-body">
+
+                    <input type="hidden" name="id" id="delete_id">
+
+                    <h4>Do you want to Delete this meal?</h4>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-primary">Yes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--#############################################################################################################-->
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mealaddmodal">
+                ADD MEAL
+            </button>
+        </div>
+    </div>
+    <div class="myForm">
+        <form th:action="@{/meals/filter}" method="get">
+            <p><input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type="submit"
+                                                                                                value="Filter"/></p>
+        </form>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped" id="datatable">
+                <thead>
+                <tr>
+                    <th> Id</th>
+                    <th> Date/Time</th>
+                    <th> Description</th>
+                    <th> Calories</th>
+                    <th> Edit</th>
+                    <th> Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${meals.empty}">
+                    <td colspan="2"> No Meals Available</td>
+                </tr>
+                <tr th:each="meal : ${meals}" th:style="${meal.excess ? 'color: green;' : 'color: red;'}">
+                    <td><span th:text="${meal.id}"></span></td>
+                    <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span>
+                        </span>
+                    </td>
+                    <td><span th:text="${meal.description}"></span></td>
+                    <td><span th:text="${meal.calories}"></span></td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm edit-btn">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-dark btn-sm deletebtn">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+<script>
+
+    $('.picker').datetimepicker({
+        format: 'DD-MM-YYYY HH:mm:ss'
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#datatable').DataTable(
+            {
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search",
+                }
+            }
+        );
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $('.deletebtn').on('click', function () {
+            $('#deletemodal').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#delete_id').val(data[0]);
+        });
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $('.edit-btn').on('click', function () {
+            $('#editmodal').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#update_id').val(data[0]);
+            $('#localDateTime').val(data[1]);
+            $('#description').val(data[2]);
+            $('#calories').val(data[3]);
+        });
+    });
+
+</script>
+
 </body>
 </html>
