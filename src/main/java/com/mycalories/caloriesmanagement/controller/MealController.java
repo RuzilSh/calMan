@@ -16,7 +16,6 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/meals")
 public class MealController {
     final
     MealRepository repository;
@@ -25,7 +24,7 @@ public class MealController {
         this.repository = repository;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String getAllSorted(Model model) {
         final List<Meal> meals = repository.findAllByOrderByLocalDateTimeDesc();
         final List<MealTo> mealTos = MealUtil.convertAll(meals, 2000);
@@ -36,7 +35,7 @@ public class MealController {
     @GetMapping("/delete")
     public String delete(@RequestParam("id") Integer id) {
         repository.deleteById(id);
-        return "redirect:/meals";
+        return "redirect:/";
     }
 
     @GetMapping("/filter")
@@ -56,7 +55,7 @@ public class MealController {
                                  @RequestParam(name = "description") String description,
                                  @RequestParam(name = "calories") Integer calories) {
         repository.save(new Meal(id, localDateTime, description, calories));
-        return "redirect:/meals";
+        return "redirect:/";
     }
 }
 

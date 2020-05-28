@@ -10,6 +10,35 @@
 </head>
 <body>
 
+<!--USER PROFILE MODAL-->
+<div class="modal fade" id="user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">User Profile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form th:action="@{/user-info}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Daily calorie limit</label>
+                        <input type="number" name="dailyCalorieLimit" class="form-control" placeholder="">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit"  class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- CREATE MODAL -->
 <div class="modal fade" id="mealaddmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -21,7 +50,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form th:action="@{/meals/save}" method="post">
+            <form th:action="@{/save}" method="post">
                 <div class="modal-body">
 
                     <div class="form-group">
@@ -59,7 +88,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form th:action="@{/meals/save}" method="post">
+            <form th:action="@{/save}" method="post">
                 <div class="modal-body">
 
                     <input type="hidden" name="id" id="update_id">
@@ -102,7 +131,7 @@
                 </button>
             </div>
 
-            <form th:action="@{/meals/delete}" method="get">
+            <form th:action="@{/delete}" method="get">
                 <div class="modal-body">
 
                     <input type="hidden" name="id" id="delete_id">
@@ -127,10 +156,13 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mealaddmodal">
                 ADD MEAL
             </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user">
+                USER PROFILE
+            </button>
         </div>
     </div>
     <div class="myForm">
-        <form th:action="@{/meals/filter}" method="get">
+        <form th:action="@{/filter}" method="get">
             <p><input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type="submit"
                                                                                                 value="Filter"/></p>
         </form>
@@ -154,9 +186,8 @@
                 </tr>
                 <tr th:each="meal : ${meals}" th:style="${meal.excess ? 'color: green;' : 'color: red;'}">
                     <td><span th:text="${meal.id}"></span></td>
-                    <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span>
-                        </span>
-                    </td>
+                    <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
+                    <td style="display:none;"><span th:text="${meal.localDateTime}"></span></td>
                     <td><span th:text="${meal.description}"></span></td>
                     <td><span th:text="${meal.calories}"></span></td>
                     <td>
@@ -185,23 +216,20 @@
 
 <script>
 
-    $('.picker').datetimepicker({
-        format: 'DD-MM-YYYY HH:mm:ss'
-    });
-
-</script>
-
-<script>
-
     $(document).ready(function () {
-        $('#datatable').DataTable(
-            {
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search",
-                }
-            }
-        );
+        $('.userbtn').on('click', function () {
+            $('#user').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#delete_id').val(data[0]);
+        });
     });
 
 </script>
@@ -241,9 +269,9 @@
             console.log(data);
 
             $('#update_id').val(data[0]);
-            $('#localDateTime').val(data[1]);
-            $('#description').val(data[2]);
-            $('#calories').val(data[3]);
+            $('#localDateTime').val(data[2]);
+            $('#description').val(data[3]);
+            $('#calories').val(data[4]);
         });
     });
 
