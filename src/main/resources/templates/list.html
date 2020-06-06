@@ -2,37 +2,61 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>your meal</title>
+    <title>Ruzil Sharifullin app</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="jquery.datetimepicker.min.css">
 </head>
 <body>
 
-<!--USER PROFILE MODAL-->
-<div class="modal fade" id="user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+
+<!--README MODAL-->
+<div class="modal fade" id="readme" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">User Profile</h5>
+                <h5 class="modal-title" id="exampleModalLabel">About the application</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form th:action="@{/user-info}" method="post">
+            <form>
+                <div class="modal-body">
+                    <h5>This is a CRUD web application for tracking food intake. You can see meal records red or green color based on the daily calories limit: If sum of daily food intake exceeds the set limit then meal records are red otherwise they're green. By default the limit is 2000 but you can set your own and see different output. Also you can filter the records by date and time. The source code is available through the link below: <a href="https://github.com/Ruzil1991/calories-management" target="_blank">https://github.com/Ruzil1991/calories-management</a></h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--USER PROFILE MODAL-->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">About the app</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="userValidation" th:action="@{/profile}" method="post">
                 <div class="modal-body">
 
                     <div class="form-group">
                         <label>Daily calorie limit</label>
-                        <input type="number" name="dailyCalorieLimit" class="form-control" placeholder="">
+                        <input type="number" id="dailyCalorieLimit" name="dailyCalorieLimit" class="form-control" th:value="${user.dailyCalorieLimit}"></span></td>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit"  class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -50,16 +74,15 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form th:action="@{/save}" method="post">
+            <form id="creationValidation" th:action="@{/save}" method="post">
                 <div class="modal-body">
-
                     <div class="form-group">
                         <label>Data/Time</label>
-                        <input type="datetime-local" name="localDateTime" class="form-control" placeholder="">
+                        <input type="datetime-local" name="localDateTime" class="form-control">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
-                        <input type="text" name="description" class="form-control" placeholder="Description">
+                        <input type="text"  name="description" class="form-control" placeholder="Description">
                     </div>
                     <div class="form-group">
                         <label>Calories</label>
@@ -88,14 +111,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form th:action="@{/save}" method="post">
+            <form id="editValidForm" th:action="@{/save}" method="post">
                 <div class="modal-body">
-
-                    <input type="hidden" name="id" id="update_id">
-
                     <div class="form-group">
+                        <input type="hidden" name="id" id="update_id">
                         <label>Data/Time</label>
-                        <input type="datetime-local" th:name="localDateTime" id="localDateTime" class="form-control">
+                        <input type="datetime-local" name="localDateTime" id="localDateTime" class="form-control">
                     </div>
                     <div class="form-group">
                         <label>Description</label>
@@ -125,7 +146,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Deleting</h5>
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -136,7 +157,7 @@
 
                     <input type="hidden" name="id" id="delete_id">
 
-                    <h4>Do you want to Delete this meal?</h4>
+                    <h4>Delete this meal?</h4>
 
                 </div>
                 <div class="modal-footer">
@@ -156,18 +177,28 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mealaddmodal">
                 ADD MEAL
             </button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileModal" >
                 USER PROFILE
             </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#readme" >
+                READ ME
+            </button>
         </div>
-    </div>
-    <div class="myForm">
-        <form th:action="@{/filter}" method="get">
-            <p><input type="date" name="startDate"/> <input type="date" name="endDate"/> <input type="submit"
-                                                                                                value="Filter"/></p>
-        </form>
-    </div>
-    <div class="card">
+        <div class="card border">
+            <div class="card-body pb-0">
+                <form th:action="@{/filter}" method="get">
+                    <label>From date:</label>
+                    <input type="date" name="startDate"/>
+                    <label>To date:</label>
+                    <input type="date" name="endDate"/>
+                    <label>From time:</label>
+                    <input type="time" name="startTime"/>
+                    <label>To time:</label>
+                    <input type="time" name="endTime"/>
+                    <input type="submit" value="Filter"/>
+                </form>
+            </div>
+        </div>
         <div class="card-body">
             <table class="table table-striped" id="datatable">
                 <thead>
@@ -186,7 +217,8 @@
                 </tr>
                 <tr th:each="meal : ${meals}" th:style="${meal.excess ? 'color: green;' : 'color: red;'}">
                     <td><span th:text="${meal.id}"></span></td>
-                    <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span></td>
+                    <td><span th:text="${#temporals.format(meal.localDateTime, 'MMM-dd-yyyy hh:mm a', 'en')}"></span>
+                    </td>
                     <td style="display:none;"><span th:text="${meal.localDateTime}"></span></td>
                     <td><span th:text="${meal.description}"></span></td>
                     <td><span th:text="${meal.calories}"></span></td>
@@ -213,12 +245,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 
 <script>
 
     $(document).ready(function () {
-        $('.userbtn').on('click', function () {
-            $('#user').modal('show');
+        $('.profilebtn').on('click', function () {
+            $('#profileModal').modal('show');
 
             $tr = $(this).closest('tr');
 
@@ -228,27 +261,9 @@
 
             console.log(data);
 
-            $('#delete_id').val(data[0]);
-        });
-    });
+            $('#dailyCalorieLimit').val(data[5]);
+            $('#localDateTime').val(data[0]);
 
-</script>
-
-<script>
-
-    $(document).ready(function () {
-        $('.deletebtn').on('click', function () {
-            $('#deletemodal').modal('show');
-
-            $tr = $(this).closest('tr');
-
-            var data = $tr.children("td").map(function () {
-                return $(this).text();
-            }).get();
-
-            console.log(data);
-
-            $('#delete_id').val(data[0]);
         });
     });
 
@@ -275,6 +290,97 @@
         });
     });
 
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $('.deletebtn').on('click', function () {
+            $('#deletemodal').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function () {
+                return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#delete_id').val(data[0]);
+        });
+    });
+
+</script>
+<script>
+    $(function() {
+
+
+        $("#creationValidation").validate({
+            rules: {
+                localDateTime: {
+                    required: true
+                },
+                description: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 120
+                },
+                calories: {
+                    required: true,
+                    min: 10,
+                    max: 5000,
+                    number: true
+                },
+                action: "required"
+
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function() {
+
+        $("#editValidForm").validate({
+            rules: {
+                localDateTime: {
+                    required: true
+                },
+                description: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 120
+                },
+                calories: {
+                    required: true,
+                    min: 10,
+                    max: 5000,
+                    number: true
+                },
+                action: "required"
+
+            }
+        });
+    });
+</script>
+
+<script>
+    $(function() {
+
+
+        $("#userValidation").validate({
+            rules: {
+                dailyCalorieLimit: {
+                    required: true,
+                    number: true,
+                    min:1,
+                    max:10000
+                },
+                action: "required"
+
+            }
+        });
+    });
 </script>
 
 </body>
