@@ -20,6 +20,8 @@ public class Meal {
     private String description;
     @Range(min = 10, max = 5000)
     private Integer calories;
+    @ManyToOne
+    private User user;
 
     public Meal() {
     }

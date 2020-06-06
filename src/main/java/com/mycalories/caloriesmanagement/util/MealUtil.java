@@ -14,9 +14,9 @@ public class MealUtil {
     private MealUtil() {
     }
 
-    public static List<MealTo> convertAll(Collection<Meal> meals, int normalCalorieIntake){
+    public static List<MealTo> convertAll(Collection<Meal> meals, int dailyCalorieLimit){
         Map<LocalDate, Integer> caloriesSumPerDay = meals.stream().collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
-        return meals.stream().map(meal -> creatTo(meal, caloriesSumPerDay.get(meal.getDate()) < normalCalorieIntake)).collect(Collectors.toList());
+        return meals.stream().map(meal -> creatTo(meal, caloriesSumPerDay.get(meal.getDate()) <= dailyCalorieLimit)).collect(Collectors.toList());
     }
 
     public static MealTo creatTo(Meal meal, boolean excess){
